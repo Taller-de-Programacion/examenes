@@ -19,6 +19,6 @@ Algunas posibles formas de contribuir:
 
  - Agregando aclaraciones del enunciado que se hicieron durante el exámen.
  - Arreglando errores y typos.
- - Subiendo enunciados faltantes en formato Markdown.
+ - Subiendo enunciados faltantes en formato Markdown (PDF si no es posible).
  - Subiendo soluciones a los ejercicios, también en formato Markdown.
 
