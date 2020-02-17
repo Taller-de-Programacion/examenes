@@ -1,8 +1,17 @@
-* Fecha: 17/12/2019
-* Cuatrimestre: 2°/2019
-* Tema: 2
+* **Fecha**: 17/12/2019
+* **Cuatrimestre**: 2°/2019
+* **Tema**: 2
 
-A continuación la resolución de algunos ejercicios correspondiente al archivo `2.pdf`
+A continuación la resolución de algunos ejercicios correspondiente al archivo 2.pdf
+
+<!-- ## 1.
+
+Escriba un programa (desde la inicialización hasta la liberación de los recursos) que reciba paquetes de la forma nnn+nn+....+nnnn= (numeros separados por +, seguidos de =) e imprima el resultado de la suma de cada paquete por pantalla. Al recibir un paquete vacío (“=”) debe cerrarse ordenadamente. No considere errores..
+
+### Respuesta:
+
+---
+ -->
 
 ## 2. Explique breve y concretamente qué es f:
 ```c
@@ -42,3 +51,74 @@ main() {
 ```c
 Pi apunta a la dirección: 1004
 ```
+
+---
+
+## 4. ¿Qué es un functor? ¿Qué ventaja ofrece frente a una función convencional? Ejemplifique.
+
+### Respuesta:
+
+Un _functor_, o _function object_, es una clase que sobrecarga el operador `()`, de esta forma, permite el tratamiento de sus instancias como punteros a funciones ejecutando el comportamiento deseado definido en el método que sobrecarga el operador `operator ()`.
+
+Al ser un objeto, además de poseer el comportamiento definido en la función, posee las ventajas de almacenar estado de forma desacoplada respecto al llamado y evita el uso de variables globales.
+
+Un ejemplo de aplicación de un functor sería un sumador:
+
+```c++
+#include <iostream>
+
+class Sumador {
+public:
+	Sumador(): total(0) {}
+	~Sumador() {}
+	void operator()(int value) {
+		this->total += value;
+	}
+private:
+	int total;
+};
+
+int main(int argc, char const *argv[]) {
+	int numbers[] = {1, 2, 3, 4, 5};
+
+	Sumador sumador;
+
+	for (int i : numbers) {
+		sumador(i);
+	}
+
+	return 0;
+}
+```
+
+---
+
+## 5. ¿Cómo se logra que 2 threads accedan (lectura/escritura) a un mismo recurso compartido sin que se generen problemas de consistencia? Ejemplifique.
+
+### Respuesta:
+
+Tras identificar la porción de código que accede al recurso compartido, la _critical section_, se bloquea la ejecución por parte de un hilo mediante el uso de mutex, el que adquiera este, será el único que podrá acceder al recurso, mientras que todos los demás deberán esperar hasta que el mutex sea liberado. Este último paso es clave, ya que de no realizarse se producirá un _dead lock_.
+
+---
+<!--
+## 6. Describa el concepto de loop de eventos (events loop) utilizado en programación orientada
+a eventos y, en particular, en entornos de interfaz gráfica (GUIs).
+
+## Respuesta:
+
+---
+ -->
+## 7. Considere la estructura `struct ejemplo { int a; char b;}`. ¿Es verdad que `sizeof (ejemplo)=sizeof(a) +sizeof(b)`? Justifique.
+
+## Respuesta:
+
+No es cierto, ya que depende de la arquitectura y del compilador. Debe tenerse en cuenta la alineación y el padding del procesador y los flags utilizados en el momento de la compilación.
+
+---
+<!--
+## 8. ¿En qué consiste el patrón de diseño RAII? Ejemplifique.
+
+## Respuesta:
+
+---
+ -->
