@@ -104,21 +104,33 @@ Tras identificar la porción de código que accede al recurso compartido, la _cr
 ## 6. Describa el concepto de loop de eventos (events loop) utilizado en programación orientada
 a eventos y, en particular, en entornos de interfaz gráfica (GUIs).
 
-## Respuesta:
+### Respuesta:
 
 ---
  -->
 ## 7. Considere la estructura `struct ejemplo { int a; char b;}`. ¿Es verdad que `sizeof (ejemplo)=sizeof(a) +sizeof(b)`? Justifique.
 
-## Respuesta:
+### Respuesta:
 
 No es cierto, ya que depende de la arquitectura y del compilador. Debe tenerse en cuenta la alineación y el padding del procesador y los flags utilizados en el momento de la compilación.
 
 ---
-<!--
+
 ## 8. ¿En qué consiste el patrón de diseño RAII? Ejemplifique.
 
-## Respuesta:
+### Respuesta:
 
----
+RAII es un patrón que consiste en encapsular la inicialización y liberación de recursos en el constructor y destructor de la clase respectivamente, ya sea memoria en el heap, un archivo o un socket. De esta forma se simplifican tanto el desarrollo, como el chequeo de errores.
+
+<!-- ---
+
+## 9. Escribir un programa ISO C que procese el archivo de enteros de 2 bytes bigendian cuyo nombre es recibido como parámetro. El procesamiento consiste en eliminar los número múltiplos de 3, trabajando sobre el mismo archivo (sin archivos intermedios ni en memoria).
+
+### Respuesta:
+ -->
+<!-- ---
+
+## 10. Implemente una función C++ denominada `DobleSiNo` que reciba dos listas de elementos y devuelva una nueva lista duplicando los elementos de la primera que no están en la segunda: `std::list<T> DobleSiNo(std::list<T> a,std::list<T> b)`;
+
+### Respuesta:
  -->
