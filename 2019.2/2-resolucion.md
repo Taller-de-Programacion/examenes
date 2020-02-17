@@ -100,14 +100,24 @@ int main(int argc, char const *argv[]) {
 Tras identificar la porción de código que accede al recurso compartido, la _critical section_, se bloquea la ejecución por parte de un hilo mediante el uso de mutex, el que adquiera este, será el único que podrá acceder al recurso, mientras que todos los demás deberán esperar hasta que el mutex sea liberado. Este último paso es clave, ya que de no realizarse se producirá un _dead lock_.
 
 ---
-<!--
-## 6. Describa el concepto de loop de eventos (events loop) utilizado en programación orientada
-a eventos y, en particular, en entornos de interfaz gráfica (GUIs).
+
+## 6. Describa el concepto de loop de eventos (events loop) utilizado en programación orientada a eventos y, en particular, en entornos de interfaz gráfica (GUIs).
 
 ### Respuesta:
 
+El loop de eventos es el patrón que permite la ejecución de las distintas acciones encoladas en la cola de eventos por parte de los distintos actores de un programa, input del usuario, eventos temporales o automáticos. Si un evento desencolado, cuenta con un manejador, o _handler_, dentro del loop, se procede a ejecutar la acción respectiva.
+
+```
+while se debe continuar:
+	evento := obtener el siguiente elemento de la cola de eventos
+	if evento == salir:
+		se debe continuar := false
+	else if existe manejador para evento:
+		ejecutar manejador
+```
+
 ---
- -->
+
 ## 7. Considere la estructura `struct ejemplo { int a; char b;}`. ¿Es verdad que `sizeof (ejemplo)=sizeof(a) +sizeof(b)`? Justifique.
 
 ### Respuesta:
