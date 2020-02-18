@@ -3,15 +3,15 @@
 * **Tema**: 2
 
 A continuación la resolución de algunos ejercicios correspondiente al archivo 2.pdf
-
-<!-- ## 1.
+<!--
+## 1.
 
 Escriba un programa (desde la inicialización hasta la liberación de los recursos) que reciba paquetes de la forma nnn+nn+....+nnnn= (numeros separados por +, seguidos de =) e imprima el resultado de la suma de cada paquete por pantalla. Al recibir un paquete vacío (“=”) debe cerrarse ordenadamente. No considere errores..
 
 ### Respuesta:
 
 ---
- -->
+-->
 
 ## 2. Explique breve y concretamente qué es f:
 ```c
@@ -132,12 +132,58 @@ No es cierto, ya que depende de la arquitectura y del compilador. Debe tenerse e
 
 RAII es un patrón que consiste en encapsular la inicialización y liberación de recursos en el constructor y destructor de la clase respectivamente, ya sea memoria en el heap, un archivo o un socket. De esta forma se simplifican tanto el desarrollo, como el chequeo de errores.
 
-<!-- ---
+---
 
 ## 9. Escribir un programa ISO C que procese el archivo de enteros de 2 bytes bigendian cuyo nombre es recibido como parámetro. El procesamiento consiste en eliminar los número múltiplos de 3, trabajando sobre el mismo archivo (sin archivos intermedios ni en memoria).
 
 ### Respuesta:
- -->
+
+```c
+#include <stdio.h>		// FILE
+#include <string.h>
+#include <stdlib.h>
+#include <unistd.h>		// truncate
+#include <sys/types.h>	// truncate
+
+#define NUM_SIZE 2
+#define BASE 10
+
+int main(int argc, char const *argv[]) {
+	char buffer[NUM_SIZE];
+	memset(buffer, 0, NUM_SIZE);
+
+	FILE* fp_read = fopen(argv[1], "rb");
+	FILE* fp_write = fopen(argv[1], "r+b");
+
+	if ((fp_read == NULL) || (fp_write == NULL)) {
+		exit(EXIT_FAILURE);
+	}
+
+	while (!feof(fp_read)) {
+		if (fread(buffer, sizeof(char), NUM_SIZE, fp_read)) {
+			short int number = (short int) strtol(buffer, NULL, BASE);
+
+			if (number % 3 != 0) {
+				fwrite(buffer, sizeof(char), NUM_SIZE, fp_write);
+			}
+		}
+	}
+
+	fclose(fp_read);
+
+	if (!feof(fp_write)) {
+		fflush(fp_write);
+		long offset = ftell(fp_write);
+		// No es C standard
+		truncate(argv[1], offset);
+	}
+
+	fclose(fp_write);
+
+	return 0;
+}
+```
+
 <!-- ---
 
 ## 10. Implemente una función C++ denominada `DobleSiNo` que reciba dos listas de elementos y devuelva una nueva lista duplicando los elementos de la primera que no están en la segunda: `std::list<T> DobleSiNo(std::list<T> a,std::list<T> b)`;
