@@ -3,15 +3,96 @@
 * **Tema**: 2
 
 A continuación la resolución de algunos ejercicios correspondiente al archivo 2.pdf
-<!--
+
 ## 1.
 
 Escriba un programa (desde la inicialización hasta la liberación de los recursos) que reciba paquetes de la forma nnn+nn+....+nnnn= (numeros separados por +, seguidos de =) e imprima el resultado de la suma de cada paquete por pantalla. Al recibir un paquete vacío (“=”) debe cerrarse ordenadamente. No considere errores..
 
 ### Respuesta:
 
+```c
+#define _POSIX_C_SOURCE 200112L
+
+#include <stdlib.h>		// strtol
+
+#include <errno.h>		// errno, strerror
+#include <stdio.h>		// printf
+#include <string.h>		// memset
+#include <stdbool.h>	// bool
+
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netdb.h>		// struct addrinfo
+#include <unistd.h>		// close
+
+#include <ctype.h>		// isdigit
+
+int main(int argc, char const *argv[]) {
+	const char* service = argv[1];	// puerto
+
+	int accept_socket_fd = 0;
+	int client_socket_fd = 0;
+
+	struct addrinfo hints;
+	struct addrinfo* ptr;
+
+	memset(&hints, 0, sizeof(struct addrinfo));
+	hints.ai_family = AF_INET;			// IPv4
+	hints.ai_socktype = SOCK_STREAM;	// TCP
+	hints.ai_flags = AI_PASSIVE;		// Server: AI_PASSIVE
+
+	getaddrinfo(NULL, service, &hints, &ptr);
+
+	accept_socket_fd = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
+
+	bind(accept_socket_fd, ptr->ai_addr, ptr->ai_addrlen);
+
+	listen(accept_socket_fd, 1);
+
+	client_socket_fd = accept(accept_socket_fd, NULL, NULL);
+
+	char buffer = 0;
+	int operand = 0;
+	int result = 0;
+	bool turn_off = false;
+
+	while (!turn_off) {
+		size_t received = 0;
+		while (received < 1) {
+			received = recv(client_socket_fd, &buffer, 1, MSG_NOSIGNAL);
+		}
+
+		if (isdigit(buffer)) {
+			operand = operand * 10 + strtol(&buffer, NULL, 10);
+		} else if (buffer == '+') {
+			result += operand;
+			operand = 0;
+		} else if (buffer == '=') {
+			result += operand;
+			operand = 0;
+			if (result == 0) {
+                turn_off = true;
+			} else {
+				printf("%d\n", result);
+				result = 0;
+			}
+		}
+	}
+
+	freeaddrinfo(ptr);
+
+	shutdown(accept_socket_fd, SHUT_RDWR);
+	close(accept_socket_fd);
+
+	shutdown(client_socket_fd, SHUT_RDWR);
+	close(client_socket_fd);
+
+	return 0;
+}
+```
+
 ---
--->
+
 
 ## 2. Explique breve y concretamente qué es f:
 ```c
@@ -189,4 +270,4 @@ int main(int argc, char const *argv[]) {
 ## 10. Implemente una función C++ denominada `DobleSiNo` que reciba dos listas de elementos y devuelva una nueva lista duplicando los elementos de la primera que no están en la segunda: `std::list<T> DobleSiNo(std::list<T> a,std::list<T> b)`;
 
 ### Respuesta:
- -->
+-->
