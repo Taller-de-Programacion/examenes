@@ -22,6 +22,10 @@ int (*f) (short int *, char[3]);
 
 ### Respuesta:
 
+a) Una **variable global static** en memoria se encuentra en el _data segment_ mientras que su _scope_ es local al archivo donde haya sido declarada.
+b) Una **variable local static** reside en el _data segment_ y su _scope_ es local al bloque de código donde haya sido declarada.
+c)
+
 --- -->
 
 ## 3. Escribir un programa ISO C que procese el archivo “nros2bytes.dat” sobre sí mismo, duplicando los enteros de 2 bytes múltiplos de 3.
@@ -78,11 +82,13 @@ int main(int argc, char const *argv[]) {
 
 --- -->
 
-<!-- ## 6. ¿Qué es una macro de C? Detalle las buenas prácticas para su definición. Ejemplifique
+## 6. ¿Qué es una macro de C? Detalle las buenas prácticas para su definición. Ejemplifique
 
 ### Respuesta:
 
---- -->
+Una macro es un fragmento de código con un identificador, que al ser invocado se expande con su definición. Existen dos tipos, _Object-like_, un identificador que será reemplazado por un valor; y _function-like_, macros cuyo identificador recibe una lista de parámetros entre paréntesis. El encargado de hacer este reemplazo es el pre-procesador.
+
+---
 
 <!-- ## 7. Describa el proceso de transformación de código fuente a un ejecutable. Precise las etapas y las tareas desarrolladas en cada una de ellas.
 
@@ -90,7 +96,7 @@ int main(int argc, char const *argv[]) {
 
 --- -->
 
-<!-- ## 8. Indique la salida del siguiente programa:
+## 8. Indique la salida del siguiente programa:
 ```cpp
 class A {
 	A() {
@@ -118,7 +124,16 @@ int main () {
 
 ### Respuesta:
 
---- -->
+El funcionamiento de constructores y destructores en clases derivadas es similar al de una pila, los construtores ejecutando un `push` mientras que los destructores un `pop`, por lo que la salida del programa será:
+
+```
+A()
+B()
+~B()
+~A()
+```
+
+---
 
 <!-- ## 9. Implemente una función C++ denominada `Sacar` que reciba dos listas de elementos y devuelva una nueva lista con los elementos de la primera que no están en la segunda: `std::list<T> Sacar(std::list<T> a,std::list<T> b)`;
 
