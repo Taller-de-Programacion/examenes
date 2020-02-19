@@ -1,5 +1,5 @@
 * **Fecha**: 17/12/2019
-* **Cuatrimestre**: 2°/2019
+* **Cuatrimestre**: 2° 2019
 * **Tema**: 2
 
 A continuación la resolución de algunos ejercicios correspondiente al archivo 2.pdf

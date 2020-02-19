@@ -1,5 +1,5 @@
 * **Fecha**: 10/12/2019
-* **Cuatrimestre**: 2°/2019
+* **Cuatrimestre**: 2° 2019
 * **Tema**: 1
 
 A continuación la resolución de algunos ejercicios correspondiente al archivo 1.pdf
@@ -24,11 +24,47 @@ int (*f) (short int *, char[3]);
 
 --- -->
 
-<!-- ## 3. Escribir un programa ISO C que procese el archivo “nros2bytes.dat” sobre sí mismo, duplicando los enteros de 2 bytes múltiplos de 3.
+## 3. Escribir un programa ISO C que procese el archivo “nros2bytes.dat” sobre sí mismo, duplicando los enteros de 2 bytes múltiplos de 3.
 
 ### Respuesta:
 
---- -->
+```c
+int main(int argc, char const *argv[]) {
+	FILE* fp_read = fopen("nros2bytes.dat", "rb");
+	FILE* fp_write = fopen("nros2bytes.dat", "r+b");
+
+	if ((fp_read == NULL) || (fp_write == NULL)) {
+		printf("Error\n");
+		return 1;
+	}
+
+	int16_t number = 0;
+
+	while (!feof(fp_read)) {
+		if (fread(&number, sizeof(int16_t), 1, fp_read)) {
+			if (number % 3 == 0) {
+				int offset = ftell(fp_read);
+				fseek(fp_write, offset, SEEK_SET);
+				int16_t next_number = 0;
+				while (!feof(fp_read)) {
+					fwrite(&number, sizeof(int16_t), 1, fp_write);
+					if (fread(&next_number, sizeof(int16_t), 1, fp_read)) {
+						number = next_number;
+					}
+				}
+				fseek(fp_read, offset + sizeof(int16_t), SEEK_SET);
+				fseek(fp_write, offset + sizeof(int16_t), SEEK_SET);
+			}
+		}
+	}
+
+	fclose(fp_read);
+	fclose(fp_write);
+
+	return 0;
+}
+```
+---
 
 <!-- ## 4. ¿Cómo se logra que 2 threads accedan (lectura/escritura) a un mismo recurso compartido sin que se generen problemas de consistencia? Ejemplifique.
 
