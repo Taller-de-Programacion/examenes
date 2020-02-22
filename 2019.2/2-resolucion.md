@@ -4,9 +4,7 @@
 
 A continuación la resolución de algunos ejercicios correspondiente al archivo 2.pdf
 
-## 1.
-
-Escriba un programa (desde la inicialización hasta la liberación de los recursos) que reciba paquetes de la forma nnn+nn+....+nnnn= (numeros separados por +, seguidos de =) e imprima el resultado de la suma de cada paquete por pantalla. Al recibir un paquete vacío (“=”) debe cerrarse ordenadamente. No considere errores..
+## 1. Escriba un programa (desde la inicialización hasta la liberación de los recursos) que reciba paquetes de la forma nnn+nn+....+nnnn= (numeros separados por +, seguidos de =) e imprima el resultado de la suma de cada paquete por pantalla. Al recibir un paquete vacío (“=”) debe cerrarse ordenadamente. No considere errores..
 
 ### Respuesta:
 
@@ -71,7 +69,7 @@ int main(int argc, char const *argv[]) {
 			result += operand;
 			operand = 0;
 			if (result == 0) {
-                turn_off = true;
+				turn_off = true;
 			} else {
 				printf("%d\n", result);
 				result = 0;
@@ -220,19 +218,16 @@ RAII es un patrón que consiste en encapsular la inicialización y liberación d
 ### Respuesta:
 
 ```c
-#include <stdio.h>		// FILE
+#include <stdio.h>		// FILE*
 #include <string.h>
 #include <stdlib.h>
+#include <arpa/inet.h>	// ntohs
 #include <unistd.h>		// truncate
 #include <sys/types.h>	// truncate
 
-#define NUM_SIZE 2
-#define BASE 10
+#define NUM_SIZE 1
 
 int main(int argc, char const *argv[]) {
-	char buffer[NUM_SIZE];
-	memset(buffer, 0, NUM_SIZE);
-
 	FILE* fp_read = fopen(argv[1], "rb");
 	FILE* fp_write = fopen(argv[1], "r+b");
 
@@ -240,12 +235,14 @@ int main(int argc, char const *argv[]) {
 		exit(EXIT_FAILURE);
 	}
 
-	while (!feof(fp_read)) {
-		if (fread(buffer, sizeof(char), NUM_SIZE, fp_read)) {
-			short int number = (short int) strtol(buffer, NULL, BASE);
+	int16_t number = 0;
 
+	while (!feof(fp_read)) {
+		if (fread(&number, sizeof(int16_t), NUM_SIZE, fp_read)) {
+			number = (int16_t) ntohs(number);
 			if (number % 3 != 0) {
-				fwrite(buffer, sizeof(char), NUM_SIZE, fp_write);
+				number = (int16_t) htons(number);
+				fwrite(&number, sizeof(int16_t), NUM_SIZE, fp_write);
 			}
 		}
 	}
@@ -255,8 +252,7 @@ int main(int argc, char const *argv[]) {
 	if (!feof(fp_write)) {
 		fflush(fp_write);
 		long offset = ftell(fp_write);
-		// No es C standard
-		truncate(argv[1], offset);
+		truncate(argv[1], offset);	// No es C standard
 	}
 
 	fclose(fp_write);
@@ -265,9 +261,26 @@ int main(int argc, char const *argv[]) {
 }
 ```
 
-<!-- ---
+---
 
 ## 10. Implemente una función C++ denominada `DobleSiNo` que reciba dos listas de elementos y devuelva una nueva lista duplicando los elementos de la primera que no están en la segunda: `std::list<T> DobleSiNo(std::list<T> a,std::list<T> b)`;
 
 ### Respuesta:
--->
+
+```cpp
+template<class T>
+std::list<T> DobleSiNo(std::list<T> a, std::list<T> b) {
+	std::list<T> result;
+
+	for (auto& item_a: a) {
+		result.push_back(item_a);
+		typename std::list<T>::iterator it = std::find(b.begin(), b.end(), item_a);
+		if (it == b.end()) {
+			result.push_back(item_a);
+		}
+
+	}
+
+	return result;
+}
+```
