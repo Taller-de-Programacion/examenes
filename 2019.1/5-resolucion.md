@@ -3,13 +3,26 @@
 * **Tema**: 5
 
 A continuación la resolución de algunos ejercicios correspondiente al archivo 5.pdf
-<!--
+
 ## 1. Escriba una rutina (para ambiente gráfico Windows o Linux) que dibuje un triángulo amarillo del tamaño de la ventana.
 
 ### Respuesta:
 
+```cpp
+void MainWindow::drawTriangle(QPaintEvent *e) {
+	QPainter painter(this);
+	QPolygon poly;
+
+	// Fondo amarillo
+	painter.setBrush(Qt::yellow);
+	poly << QPoint(0, this->height()) << QPoint(this->width(), this->height())
+		 << QPoint(this->width() / 2, 0);
+	painter.drawPolygon(poly);
+}
+```
+
 ---
--->
+
 ## 2. Escriba las siguientes definiciones/declaraciones:
 * a) Declaración de un puntero a puntero a entero largo con signo.
 * b) Definición de la función RESTA, que tome dos enteros largos con signo y devuelva su resta. Esta función debe ser visible en todos los módulos del programa.
@@ -98,13 +111,47 @@ Un método virtual puro es aquel que no admite implementación dentro de la clas
 
 Dado que en C++ no existe una modificador `abstract`, al definir un método virtual puro en una clase, la clase que lo contiene se torna abstracta, es decir, que no pueden crearse instancias de ella.
 
-<!-- ---
+---
 
 ## 7. Escribir un programa C que procese el archivo `numeros.txt` sobre sí mismo (sin crear archivos intermedios y sin subir el archivo a memoria). El procesamiento consiste en leer nros hexadecimales de 4 símbolos y reemplazarlos por su valor decimal (en texto).
 
 ### Respuesta:
 
--->
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdint.h>	 // int16_t
+
+#define FILENAME "numeros.txt"
+#define NUM_SIZE 5
+#define BASE 16
+
+int main(int argc, char const *argv[]) {
+	FILE *fp_read = fopen(FILENAME, "rt");
+	FILE *fp_write = fopen(FILENAME, "r+t");
+
+	if ((fp_read == NULL) || (fp_write == NULL)) {
+		exit(EXIT_FAILURE);
+	}
+
+	char read_from_file[NUM_SIZE];
+	memset(read_from_file, 0, sizeof(char) * NUM_SIZE);
+
+	while (!feof(fp_read)) {
+		if (fread(read_from_file, sizeof(char), NUM_SIZE, fp_read)) {
+			uint16_t number = strtol(read_from_file, NULL, BASE);
+			fprintf(fp_write, "%d ", number);
+		}
+	}
+
+	fclose(fp_read);
+	fclose(fp_write);
+
+	return 0;
+}
+```
+
 ---
 
 ## 8. ¿Qué es el polimorfismo? Ejemplifique mediante código.
