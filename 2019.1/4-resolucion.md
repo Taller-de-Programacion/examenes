@@ -12,8 +12,7 @@ Se encuentra en 2019.2/1-resolucion.md, ejercicio 6
 ---
  -->
 <!--
-## 2. Describa el proceso de transformación de código fuente a un ejecutable. Precise las etapas y
-las tareas desarrolladas en cada una de ellas.
+## 2. Describa el proceso de transformación de código fuente a un ejecutable. Precise las etapas y las tareas desarrolladas en cada una de ellas.
 
 ### Respuesta:
 

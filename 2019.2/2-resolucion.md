@@ -9,30 +9,47 @@ A continuación la resolución de algunos ejercicios correspondiente al archivo 
 ### Respuesta:
 
 ```c
-#define _POSIX_C_SOURCE 200112L
-
 #include <stdlib.h>		// strtol
 
 #include <errno.h>		// errno, strerror
 #include <stdio.h>		// printf
 #include <string.h>		// memset
-#include <stdbool.h>	// bool
 
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>		// struct addrinfo
 #include <unistd.h>		// close
 
-#include <ctype.h>		// isdigit
+#define _POSIX_C_SOURCE 200112L
+
+#define START 0
+#define MESSAGE 1
+#define CLOSE 2
+
+#define BUFFER_SIZE 1
+#define ARGC_COUNT 2
+
+void update(char buffer, int *number, int *total) {
+	if ((buffer >= '0') && (buffer <= '9')) {
+		(*number) = (*number) * 10 + (buffer - '0');
+	} else if (buffer == '+') {
+		(*total) += (*number);
+		(*number) = 0;
+	}
+}
 
 int main(int argc, char const *argv[]) {
-	const char* service = argv[1];	// puerto
+	if (argc != ARGC_COUNT) {
+		exit(EXIT_FAILURE);
+	}
+
+	const char *service = argv[1];	// puerto
 
 	int accept_socket_fd = 0;
 	int client_socket_fd = 0;
 
 	struct addrinfo hints;
-	struct addrinfo* ptr;
+	struct addrinfo *ptr;
 
 	memset(&hints, 0, sizeof(struct addrinfo));
 	hints.ai_family = AF_INET;			// IPv4
@@ -50,36 +67,39 @@ int main(int argc, char const *argv[]) {
 	client_socket_fd = accept(accept_socket_fd, NULL, NULL);
 
 	char buffer = 0;
-	int operand = 0;
-	int result = 0;
-	bool turn_off = false;
+	int number = 0;
+	int total = 0;
+	char state = START;
 
-	while (!turn_off) {
+	while (state != CLOSE) {
 		size_t received = 0;
 		while (received < 1) {
-			received = recv(client_socket_fd, &buffer, 1, MSG_NOSIGNAL);
+			received = recv(client_socket_fd, &buffer, BUFFER_SIZE, MSG_NOSIGNAL);
 		}
 
-		if (isdigit(buffer)) {
-			operand = operand * 10 + strtol(&buffer, NULL, 10);
-		} else if (buffer == '+') {
-			result += operand;
-			operand = 0;
-		} else if (buffer == '=') {
-			result += operand;
-			operand = 0;
-			if (result == 0) {
-				turn_off = true;
-			} else {
-				printf("%d\n", result);
-				result = 0;
+		switch (state) {
+			case START:
+			state = MESSAGE;
+			update(buffer, &number, &total);
+			if (buffer == '=') {
+				state = CLOSE;
 			}
+			break;
+			case MESSAGE:
+			update(buffer, &number, &total);
+			if (buffer == '=') {
+				total += number;
+				printf("%d\n", total);
+				total = 0;
+				number = 0;
+				state = START;
+			}
+			break;
 		}
 	}
 
 	freeaddrinfo(ptr);
 
-	shutdown(accept_socket_fd, SHUT_RDWR);
 	close(accept_socket_fd);
 
 	shutdown(client_socket_fd, SHUT_RDWR);
@@ -90,7 +110,6 @@ int main(int argc, char const *argv[]) {
 ```
 
 ---
-
 
 ## 2. Explique breve y concretamente qué es f:
 ```c
